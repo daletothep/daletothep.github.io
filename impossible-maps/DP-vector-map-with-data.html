@@ -1,0 +1,91 @@
+<!-- Documentation: https://www.mapbox.com/mapbox-gl-js/style-spec/#sources-geojson -->
+<!-- Mapbox styles: https://github.com/mapbox/mapbox-gl-styles -->
+<!-- Earthquake data: https://earthquake.usgs.gov/ -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    html,
+    #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+    }
+
+    .marker {
+        background-image: url('http://mrhousch.com/imgs/lessons/washington_fieldtrip/washington001.png');
+        background-size: cover;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+    </style>
+    <title> DC stations </title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel="shortcut icon" href="">
+
+<body>
+    <div id="map"> </div>
+    <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZGFsZXRvdGhlcCIsImEiOiJjamY0cnkwcG0xNWdnMndtcXV5MWFuOWg4In0.jaigt-du-AeHX5QGw0wAXQ';
+
+    var map = new mapboxgl.Map({
+        container: 'map', // you need this
+        style: 'mapbox://styles/mapbox/streets-v9', // you also need this 
+        center: [-77.035278, 38.8895], // [long, lat] Different than leaflet, different than google maps, same as geojson! 
+        zoom: 11,
+    });
+
+    // create a HTML element for each feature
+    var el = document.createElement('div');
+    el.className = 'marker';
+
+    new mapboxgl.Marker(el)
+    .setLngLat([-77.035278, 38.8895])
+    .addTo(map);
+
+    new mapboxgl.Popup({closeOnClick: true})
+    .setLngLat([-77.035278, 38.8895])
+    .setHTML('<a10>Washington Monument</a10>')
+    .addTo(map);
+
+
+    // Source is where the data is coming from, layer is what you're going to do with it.
+    map.on('load', function() {
+        map.addSource('stations', {
+            type: 'geojson',
+            data: 'data/stations.geojson' //always check this line
+        });
+        map.addLayer({
+            'id': 'stations',
+            'type': 'circle',
+            'source': 'stations',
+            'paint' : {
+                // make circles larger as the user zooms from z12 to z22
+                'circle-radius': {
+                    'base': 50,
+                    'stops': [[12, 5], [22, 180]]
+
+                },
+                'circle-color': {
+                    'property': 'line',
+                    'type': 'identity'
+                }
+            }
+        })
+    });
+    </script>
+</body>
+
+</html>
