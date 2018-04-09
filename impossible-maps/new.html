@@ -1,0 +1,255 @@
+<!-- Documentation: https://www.mapbox.com/mapbox-gl-js/style-spec/#sources-geojson -->
+<!-- Mapbox styles: https://github.com/mapbox/mapbox-gl-styles -->
+<!-- Earthquake data: https://earthquake.usgs.gov/ -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+
+    .marker {
+        background-image: url('http://mrhousch.com/imgs/lessons/washington_fieldtrip/washington001.png');
+        background-size: cover;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    body {
+  margin: 0;
+  padding: 0;
+}
+
+h2,
+h3 {
+  margin: 10px;
+  font-size: 1.2em;
+}
+
+h3 {
+  font-size: 1em;
+}
+
+p {
+  font-size: 0.85em;
+  margin: 10px;
+  text-align: left;
+}
+
+/**
+* Create a position for the map
+* on the page */
+#map {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+
+/**
+* Set rules for how the map overlays
+* (info box and legend) will be displayed
+* on the page. */
+.map-overlay {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.8);
+  margin-right: 20px;
+  font-family: Arial, sans-serif;
+  overflow: auto;
+  border-radius: 3px;
+}
+
+#features {
+  top: 0;
+  height: 150px;
+  margin-top: 20px;
+  width: 200px;
+}
+
+#features2 {
+  position: absolute;
+  top: 0;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  margin-right: 20px;
+  font-family: Arial, sans-serif;
+  overflow: auto;
+  border-radius: 3px;
+  height: 150px;
+  margin-top: 20px;
+  width: 500px;
+}
+
+#legend {
+  padding: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  line-height: 18px;
+  height: 150px;
+  margin-bottom: 40px;
+  width: 100px;
+}
+
+.legend-key {
+  display: inline-block;
+  border-radius: 20%;
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+}
+
+    </style>
+    <title> DC stations with Legend </title>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v0.40.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel="shortcut icon" href="">
+
+<body>
+    <div id="map"> </div>
+    <div class='map-overlay' id='features'><h2>Train Stations</h2>
+        <div id='pd'>
+            <p>RED LINE: opened 1976</p>
+            <p>BLUE LINE: opened 1977</p>
+            <p>ORANGE LINE: opened 1978</p>
+            <p>GREEN LINE: opened 1991</p>
+        </div>
+    </div>
+    <div class='map-overlay' id='features2'><h2>HOW CLOSE ARE GOVERNMENT BRANCHES TO DC TRAIN STATIONS</h2>
+        <div id='pd'>
+            <p>State Department       Pentagon</p>
+            <p>House of Representatives</p>
+            <p>White House         Supreme Court</p>
+        </div>
+    </div>
+    <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZGFsZXRvdGhlcCIsImEiOiJjamY0cnkwcG0xNWdnMndtcXV5MWFuOWg4In0.jaigt-du-AeHX5QGw0wAXQ';
+
+    var map = new mapboxgl.Map({
+        container: 'map', // you need this
+        style: 'mapbox://styles/mapbox/streets-v9', // you also need this 
+        center: [-77.028221, 38.887619], // [long, lat] Different than leaflet, different than google maps, same as geojson! 
+        zoom: 13,
+    });
+
+    // create a HTML element for each feature
+    //Washington Monument
+    var el = document.createElement('div');
+    el.className = 'marker';
+
+    new mapboxgl.Marker(el)
+    .setLngLat([-77.035278, 38.8895])
+    .addTo(map);
+
+    new mapboxgl.Popup({closeOnClick: true})
+    .setLngLat([-77.035278, 38.8895])
+    .setText('Washington Monument')
+    .addTo(map);
+
+    //house of reps
+    var el = document.createElement('div');
+    el.className = 'marker';
+    el.style.backgroundImage = 'url(https://upload.wikimedia.org/wikipedia/commons/4/4b/Seal_of_the_United_States_Congress.svg)';
+    
+    new mapboxgl.Marker(el)
+    .setLngLat([-77.009212, 38.889031])
+    .addTo(map);
+
+    new mapboxgl.Popup({closeOnClick: true})
+    .setLngLat([-77.009212, 38.889031])
+    .setHTML('<a10>Congress</a10>')
+    .addTo(map);
+
+    //white house
+    var el = document.createElement('div');
+    el.className = 'marker';
+    el.style.backgroundImage = 'url(http://www.taxpolicycenter.org/sites/default/files/styles/manual_crop_1500w/public/blog/shutterstock_158620832.jpg?itok=0Gqy6zSF)'; 
+    
+    new mapboxgl.Marker(el)
+    .setLngLat([-77.036530, 38.897676])
+    .addTo(map);
+
+    new mapboxgl.Popup({closeOnClick: true})
+    .setLngLat([-77.036530, 38.897676])
+    .setHTML('<a10>White House</a10>')
+    .addTo(map);
+    
+    //pentagon
+    var el = document.createElement('div');
+    el.className = 'marker';
+    el.style.backgroundImage = 'url(https://upload.wikimedia.org/wikipedia/commons/0/0c/The_Pentagon_January_2008.jpg)';
+    
+    new mapboxgl.Marker(el)
+    .setLngLat([-77.056267, 38.871857])
+    .addTo(map);
+
+    new mapboxgl.Popup({closeOnClick: true})
+    .setLngLat([-77.056267, 38.871857])
+    .setHTML('<a10>Pentagon</a10>')
+    .addTo(map);
+ 
+    //state department
+    var el = document.createElement('div');
+    el.className = 'marker';
+    el.style.backgroundImage = 'url(https://foreignpolicymag.files.wordpress.com/2015/07/gettyimages-151866505.jpg?w=1536&h=1024&crop=0,0,0,0)';
+    
+    new mapboxgl.Marker(el)
+    .setLngLat([-77.048358, 38.894486])
+    .addTo(map);
+
+    new mapboxgl.Popup({closeOnClick: true})
+    .setLngLat([-77.048358, 38.894486])
+    .setHTML('<a10>State Department</a10>')
+    .addTo(map);
+
+    //supreme court
+    var el = document.createElement('div');
+    el.className = 'marker';
+    el.style.backgroundImage = 'url(https://upload.wikimedia.org/wikipedia/commons/5/51/Oblique_facade_2%2C_US_Supreme_Court.jpg)';
+    
+    new mapboxgl.Marker(el)
+    .setLngLat([-77.004440, 38.890642])
+    .addTo(map);
+
+    new mapboxgl.Popup({closeOnClick: true})
+    .setLngLat([-77.004440, 38.890642])
+    .setHTML('<a10>Supreme Court</a10>')
+    .addTo(map);
+
+
+    // Source is where the data is coming from, layer is what you're going to do with it.
+    map.on('load', function() {
+        map.addSource('stations', {
+            type: 'geojson',
+            data: 'data/stations.geojson' //always check this line
+        });
+        map.addLayer({
+            'id': 'stations',
+            'type': 'circle',
+            'source': 'stations',
+            'paint' : {
+                // make circles larger as the user zooms from z12 to z22
+                'circle-radius': {
+                    'base': 150,
+                    'stops': [[12, 11.5], [22, 180]]
+
+                },
+                'circle-color': {
+                    'property': 'line',
+                    'type': 'identity'
+                }
+            }
+        })
+    });
+    </script>
+</body>
+
+</html>
